@@ -8,7 +8,7 @@ from app.dependencies import authenicate_user
 from app.schemas.post import CreatePost , UpdatePost
 from app.models.user import UserModel
 
-router = APIRouter("/post")
+router = APIRouter(prefix="/post")
 
 
 @router.get("/")
@@ -49,7 +49,7 @@ def create_posts(data : CreatePost , db:Annotated[Session , Depends(get_db)] , c
         "Post" : new_post
     }
 
-@router.put("/editPost{id}")
+@router.put("/editPost/{id}")
 def edit_post( data : UpdatePost , id : int , db:Annotated[Session , Depends(get_db)] , current_user : Annotated[dict , Depends(authenicate_user)]):
     user = db.query(UserModel).filter(UserModel.email == current_user["sub"]).first()
     if not user :
@@ -59,8 +59,8 @@ def edit_post( data : UpdatePost , id : int , db:Annotated[Session , Depends(get
     if not post :
         raise HTTPException(status_code=403 , detail="Post not Found !!")
 
+
     if post.author_id == user.id or user.role == "admin":
-       
         post.title = data.title
         post.content = data.content
         db.commit()
@@ -72,7 +72,7 @@ def edit_post( data : UpdatePost , id : int , db:Annotated[Session , Depends(get
         "Message" : "Post Updated !!"
     }
 
-@router.delete("/deletePost{id}")
+@router.delete("/deletePost/{id}")
 def delete_post(id : int , db:Annotated[Session , Depends(get_db)] , current_user : Annotated[dict , Depends(authenicate_user)]):
     user = db.query(UserModel).filter(UserModel.email == current_user["sub"]).first()
     if not user :
@@ -86,3 +86,5 @@ def delete_post(id : int , db:Annotated[Session , Depends(get_db)] , current_use
         db.commit()
     else:
         raise HTTPException(status_code=403, detail="Not authorized to edit this post")
+
+    return{"Message" : "Post Deleted !!"}

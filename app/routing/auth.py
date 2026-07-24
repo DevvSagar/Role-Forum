@@ -10,7 +10,7 @@ from app.dependencies import authenicate_user
 
 
 
-router = APIRouter(prefix="/role/auth")
+router = APIRouter(prefix="/auth")
 
 @router.post("/login")
 def Login(data : Login , db:Annotated[Session , Depends(get_db)]):

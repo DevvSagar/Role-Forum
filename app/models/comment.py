@@ -11,3 +11,4 @@ class CommentModel(Base):
     post_id: Mapped[int] = mapped_column(Integer , ForeignKey("posts.id") , nullable=False , index=True)
     author_id : Mapped[int] = mapped_column(Integer , ForeignKey("users.id") , nullable=False , index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=True, default=lambda: datetime.now(timezone.utc))
